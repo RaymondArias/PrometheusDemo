@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    k8s-app: hello-world
+    app: prometheus-operator
+    release: monitoring
+  name: hello-alert-rule
+spec:
+  groups:
+  - name: HelloAlertRule
+    rules:
+    - alert: ErrorRateSpiked
+      annotations:
+        message: "Hello People error rates spike"
+      expr: sum(rate(prometheus_demo_request_count{code="500"}[5m])) / sum(rate(prometheus_demo_request_count[5m])) > 0.1
+      for: 1m
+      labels:
+        severity: critical
