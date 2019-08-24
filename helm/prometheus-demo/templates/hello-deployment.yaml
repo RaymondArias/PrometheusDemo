@@ -1,7 +1,11 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hello-people
+  annotations:
+    ad.datadoghq.com/{{ .Chart.Name }}.check_names: '["prometheus"]'
+    ad.datadoghq.com/{{ .Chart.Name }}.init_configs: '[{}]'
+    ad.datadoghq.com/{{ .Chart.Name }}.instances: '[{"prometheus_url": "http://%%host%%:8080/metrics","namespace": "test","metrics": ["*"],"type_overrides": {}}]'
   labels:
     app.kubernetes.io/name: {{ include "prometheus-demo.name" . }}
     helm.sh/chart: {{ include "prometheus-demo.chart" . }}
@@ -15,6 +19,10 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
+      annotations:
+        ad.datadoghq.com/{{ .Chart.Name }}.check_names: '["prometheus"]'
+        ad.datadoghq.com/{{ .Chart.Name }}.init_configs: '[{}]'
+        ad.datadoghq.com/{{ .Chart.Name }}.instances: '[{"prometheus_url": "http://%%host%%:8080/metrics","namespace": "promdemo","metrics": ["*"], "send_histogram_buckets": true, "type_overrides": {"prometheus_demo_request_latency_seconds": "histogram"}}]'
       labels:
         app.kubernetes.io/name: {{ include "prometheus-demo.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -26,6 +34,8 @@ spec:
           env:
           - name: REDIS_ADDR
             value: {{ .Values.redisAddress }}
+          - name: RELEASE
+            value: "{{ .Release.Revision }}"
           ports:
             - name: http
               containerPort: 8080
