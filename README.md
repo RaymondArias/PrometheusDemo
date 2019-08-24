@@ -15,4 +15,4 @@ The current deployment works with
 - [Datadog Prometheus Intregation](https://docs.datadoghq.com/getting_started/integrations/prometheus?tab=kubernetes)
 
 ## Deployment
-`helm install ./helm/prometheus
+`helm install ./helm/prometheus`
