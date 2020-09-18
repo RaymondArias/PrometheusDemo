@@ -3,7 +3,7 @@ kind: ServiceMonitor
 metadata:
   name: hello-people
   labels:
-    release: monitoring
+    release: prometheus
 spec:
   selector:
     matchLabels:

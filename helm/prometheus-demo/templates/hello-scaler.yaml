@@ -1,0 +1,19 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: helloscaled-scaledobject
+#   namespace: default
+spec:
+  scaleTargetRef:
+    name: hello-people
+  pollingInterval: 15
+  cooldownPeriod:  30
+  minReplicaCount: 1
+  maxReplicaCount: 50
+  triggers:
+  - type: prometheus
+    metadata:
+      serverAddress: http://prometheus-operated.default:9090
+      metricName: http_requests_total
+      threshold: "5"
+      query: max(sum(irate(prometheus_demo_request_count[1m])) by (pod))

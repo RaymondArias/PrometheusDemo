@@ -2,11 +2,13 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
     name: hello-people-redis
-    helm.sh/chart: {{ include "prometheus-demo.chart" . }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app: redis
+    labels:
+      helm.sh/chart: {{ include "prometheus-demo.chart" . }}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
+      app: redis
 spec:
   replicas: 1
+  serviceName: "hello-people-redis"
   selector:
     matchLabels:
       app: redis
